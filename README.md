@@ -96,3 +96,12 @@ npm run build
 ```
 
 This will create a `dist` directory with the production build of the application.
+
+## Blockchain Terminology
+
+FlexStake is a blockchain project that includes components and terminology related to blockchain technology. Below are some key terms used in the project:
+
+- **Wallet**: A digital wallet that allows users to store and manage their tokens.
+- **Staking**: The process of locking up tokens to support the network and earn rewards.
+- **Delegation**: The act of delegating tokens to a validator to earn rewards.
+- **Slashing Insurance**: A mechanism to protect stakers from penalties due to validator misbehavior.
