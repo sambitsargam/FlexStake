@@ -137,3 +137,9 @@ dist
 
 # Smart contract build artifacts
 contracts
+
+# Frontend dependencies
+frontend/node_modules
+
+# Frontend build artifacts
+frontend/dist

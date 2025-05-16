@@ -57,3 +57,42 @@ flexStake.unstake(amount);
 FlexStake flexStake = FlexStake(contractAddress);
 flexStake.claimReward();
 ```
+
+## Frontend Setup
+
+The FlexStake frontend allows users to interact with the smart contract through a web interface. Below are the instructions for setting up and running the frontend.
+
+### Prerequisites
+
+- Node.js and npm installed on your machine.
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/sambitsargam/FlexStake.git
+   cd FlexStake/frontend
+   ```
+
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the Frontend
+
+To start the frontend application, run the following command:
+```bash
+npm start
+```
+
+This will start a local development server and open the application in your default web browser.
+
+### Building for Production
+
+To build the frontend for production, run the following command:
+```bash
+npm run build
+```
+
+This will create a `dist` directory with the production build of the application.
