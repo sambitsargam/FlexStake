@@ -10,6 +10,7 @@ contract FlexStake {
     event Staked(address indexed user, uint256 amount);
     event Unstaked(address indexed user, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
+    event NewStake(address indexed user, uint256 amount, uint256 duration);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not the contract owner");
@@ -28,6 +29,16 @@ contract FlexStake {
         totalStaked += msg.value;
 
         emit Staked(msg.sender, msg.value);
+    }
+
+    function newStake(uint256 _amount, uint256 _duration) external payable {
+        require(_amount > 0, "Cannot stake 0");
+        require(_duration > 0, "Duration must be greater than 0");
+
+        stakes[msg.sender] += _amount;
+        totalStaked += _amount;
+
+        emit NewStake(msg.sender, _amount, _duration);
     }
 
     function unstake(uint256 _amount) external {

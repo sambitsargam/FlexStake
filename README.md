@@ -15,6 +15,7 @@ The FlexStake contract is designed to manage staking and reward distribution. Us
 - `unstake(uint256 _amount)`: Allows users to unstake a specified amount of tokens.
 - `distributeRewards()`: Allows the contract owner to distribute rewards to all stakers.
 - `claimReward()`: Allows users to claim their accumulated rewards.
+- `newStake(uint256 _amount, uint256 _duration)`: Allows users to stake tokens with a specified duration.
 
 ### Deployment
 
@@ -56,6 +57,13 @@ flexStake.unstake(amount);
 ```solidity
 FlexStake flexStake = FlexStake(contractAddress);
 flexStake.claimReward();
+```
+
+#### Staking Tokens with Duration
+
+```solidity
+FlexStake flexStake = FlexStake(contractAddress);
+flexStake.newStake(amount, duration);
 ```
 
 ## Frontend Setup
