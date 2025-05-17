@@ -114,5 +114,15 @@ describe("FlexStake", function () {
     it("Should not allow claiming 0 rewards", async function () {
       await expect(flexStake.connect(addr1).claimReward()).to.be.revertedWith("No rewards to claim");
     });
+
+    it("Should correctly distribute rewards after bug fix", async function () {
+      await flexStake.connect(addr1).stake({ value: ethers.utils.parseEther("1") });
+      await flexStake.connect(addr2).stake({ value: ethers.utils.parseEther("2") });
+
+      await flexStake.distributeRewards();
+
+      expect(await flexStake.rewards(addr1.address)).to.equal(ethers.utils.parseEther("0.1"));
+      expect(await flexStake.rewards(addr2.address)).to.equal(ethers.utils.parseEther("0.2"));
+    });
   });
 });

@@ -57,7 +57,14 @@ contract FlexStake {
     }
 
     function distributeRewards() external onlyOwner {
+        address[] memory stakers = new address[](totalStaked);
+        uint256 index = 0;
         for (address staker : stakes) {
+            stakers[index] = staker;
+            index++;
+        }
+        for (uint256 i = 0; i < stakers.length; i++) {
+            address staker = stakers[i];
             uint256 reward = stakes[staker] * rewardRate / 100;
             rewards[staker] += reward;
         }
