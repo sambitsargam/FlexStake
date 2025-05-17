@@ -66,6 +66,47 @@ FlexStake flexStake = FlexStake(contractAddress);
 flexStake.newStake(amount, duration);
 ```
 
+#### Interacting with the Contract from the Frontend
+
+To interact with the FlexStake contract from the frontend, you can use the following code snippets:
+
+##### Listening for Contract Events
+
+```javascript
+function listenForContractEvents(contract) {
+    contract.on('ContractStateChanged', () => {
+        updateUIFromContractState(contract);
+    });
+}
+```
+
+##### Updating the UI from Contract State
+
+```javascript
+async function updateUIFromContractState(contract) {
+    const [totalStaked, rewardRate, contractBalance] = await contract.getContractState();
+    setTotalStaked(totalStaked.toString());
+    setRewardRate(rewardRate.toString());
+    setContractBalance(contractBalance.toString());
+}
+```
+
+##### Interacting with the Contract
+
+```javascript
+async function handleStake(contract, stakeAmount) {
+    const tx = await contract.stake({ value: ethers.utils.parseEther(stakeAmount.toString()) });
+    await tx.wait();
+    updateUIFromContractState(contract);
+}
+
+async function handleNewStake(contract, newStakeAmount, stakeDuration) {
+    const tx = await contract.newStake(ethers.utils.parseEther(newStakeAmount.toString()), stakeDuration);
+    await tx.wait();
+    updateUIFromContractState(contract);
+}
+```
+
 ## Frontend Setup
 
 The FlexStake frontend allows users to interact with the smart contract through a web interface. Below are the instructions for setting up and running the frontend.

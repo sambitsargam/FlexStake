@@ -11,6 +11,7 @@ contract FlexStake {
     event Unstaked(address indexed user, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
     event NewStake(address indexed user, uint256 amount, uint256 duration);
+    event ContractStateChanged();
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not the contract owner");
@@ -29,6 +30,7 @@ contract FlexStake {
         totalStaked += msg.value;
 
         emit Staked(msg.sender, msg.value);
+        emit ContractStateChanged();
     }
 
     function newStake(uint256 _amount, uint256 _duration) external payable {
@@ -39,6 +41,7 @@ contract FlexStake {
         totalStaked += _amount;
 
         emit NewStake(msg.sender, _amount, _duration);
+        emit ContractStateChanged();
     }
 
     function unstake(uint256 _amount) external {
@@ -50,6 +53,7 @@ contract FlexStake {
         payable(msg.sender).transfer(_amount);
 
         emit Unstaked(msg.sender, _amount);
+        emit ContractStateChanged();
     }
 
     function distributeRewards() external onlyOwner {
@@ -57,6 +61,7 @@ contract FlexStake {
             uint256 reward = stakes[staker] * rewardRate / 100;
             rewards[staker] += reward;
         }
+        emit ContractStateChanged();
     }
 
     function claimReward() external {
@@ -67,5 +72,10 @@ contract FlexStake {
         payable(msg.sender).transfer(reward);
 
         emit RewardPaid(msg.sender, reward);
+        emit ContractStateChanged();
+    }
+
+    function getContractState() external view returns (uint256, uint256, uint256) {
+        return (totalStaked, rewardRate, address(this).balance);
     }
 }

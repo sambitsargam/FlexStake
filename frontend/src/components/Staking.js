@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+import FlexStake from '../contracts/FlexStake.json';
 
-function Staking() {
+function Staking({ contract }) {
   const [stakeAmount, setStakeAmount] = useState(0);
   const [delegationAmount, setDelegationAmount] = useState(0);
   const [newStakeAmount, setNewStakeAmount] = useState(0);
   const [stakeDuration, setStakeDuration] = useState(0);
+  const [totalStaked, setTotalStaked] = useState(0);
+  const [rewardRate, setRewardRate] = useState(0);
+  const [contractBalance, setContractBalance] = useState(0);
 
-  const handleStake = () => {
-    // Logic to stake tokens
-    console.log(`Staked ${stakeAmount} tokens`);
+  useEffect(() => {
+    if (contract) {
+      updateUIFromContractState(contract);
+      listenForContractEvents(contract);
+    }
+  }, [contract]);
+
+  const handleStake = async () => {
+    if (contract) {
+      const tx = await contract.stake({ value: ethers.utils.parseEther(stakeAmount.toString()) });
+      await tx.wait();
+      updateUIFromContractState(contract);
+    }
   };
 
   const handleDelegate = () => {
@@ -16,9 +31,25 @@ function Staking() {
     console.log(`Delegated ${delegationAmount} tokens`);
   };
 
-  const handleNewStake = () => {
-    // Logic to stake tokens with duration
-    console.log(`Staked ${newStakeAmount} tokens for ${stakeDuration} days`);
+  const handleNewStake = async () => {
+    if (contract) {
+      const tx = await contract.newStake(ethers.utils.parseEther(newStakeAmount.toString()), stakeDuration);
+      await tx.wait();
+      updateUIFromContractState(contract);
+    }
+  };
+
+  const updateUIFromContractState = async (contract) => {
+    const [totalStaked, rewardRate, contractBalance] = await contract.getContractState();
+    setTotalStaked(totalStaked.toString());
+    setRewardRate(rewardRate.toString());
+    setContractBalance(contractBalance.toString());
+  };
+
+  const listenForContractEvents = (contract) => {
+    contract.on('ContractStateChanged', () => {
+      updateUIFromContractState(contract);
+    });
   };
 
   return (
@@ -56,6 +87,12 @@ function Staking() {
           placeholder="Stake Duration (days)"
         />
         <button onClick={handleNewStake}>Stake with Duration</button>
+      </div>
+      <div>
+        <h2>Contract State</h2>
+        <p>Total Staked: {totalStaked}</p>
+        <p>Reward Rate: {rewardRate}%</p>
+        <p>Contract Balance: {contractBalance} ETH</p>
       </div>
     </div>
   );
