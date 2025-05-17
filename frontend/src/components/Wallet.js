@@ -30,6 +30,7 @@ function Wallet() {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const balance = await provider.getBalance(account);
         setBalance(ethers.utils.formatEther(balance));
+        animateElement(document.querySelector('.Wallet'));
       } catch (error) {
         console.error('Error connecting to wallet:', error);
       }
@@ -55,6 +56,13 @@ function Wallet() {
       };
     }
   }, [contract]);
+
+  const animateElement = (element) => {
+    element.classList.add('animate');
+    setTimeout(() => {
+      element.classList.remove('animate');
+    }, 1000);
+  };
 
   return (
     <div className="Wallet">

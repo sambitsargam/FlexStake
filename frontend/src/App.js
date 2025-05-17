@@ -36,6 +36,13 @@ function App() {
     setContractBalance(contractBalance.toString());
   }
 
+  function animateElement(element) {
+    element.classList.add('animate');
+    setTimeout(() => {
+      element.classList.remove('animate');
+    }, 1000);
+  }
+
   return (
     <div className="App">
       <header className="App-header">

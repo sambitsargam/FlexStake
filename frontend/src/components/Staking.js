@@ -23,12 +23,14 @@ function Staking({ contract }) {
       const tx = await contract.stake({ value: ethers.utils.parseEther(stakeAmount.toString()) });
       await tx.wait();
       updateUIFromContractState(contract);
+      animateElement(document.querySelector('.Staking'));
     }
   };
 
   const handleDelegate = () => {
     // Logic to delegate tokens
     console.log(`Delegated ${delegationAmount} tokens`);
+    animateElement(document.querySelector('.Staking'));
   };
 
   const handleNewStake = async () => {
@@ -36,6 +38,7 @@ function Staking({ contract }) {
       const tx = await contract.newStake(ethers.utils.parseEther(newStakeAmount.toString()), stakeDuration);
       await tx.wait();
       updateUIFromContractState(contract);
+      animateElement(document.querySelector('.Staking'));
     }
   };
 
@@ -50,6 +53,13 @@ function Staking({ contract }) {
     contract.on('ContractStateChanged', () => {
       updateUIFromContractState(contract);
     });
+  };
+
+  const animateElement = (element) => {
+    element.classList.add('animate');
+    setTimeout(() => {
+      element.classList.remove('animate');
+    }, 1000);
   };
 
   return (

@@ -1,6 +1,7 @@
 body {
     background-color: #f0f0f0;
     font-family: Arial, sans-serif;
+    transition: background-color 0.5s ease-in-out;
 }
 
 header {
@@ -10,8 +11,28 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.5s ease-in-out;
 }
 
 main {
     padding: 20px;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+button {
+    transition: transform 0.3s ease-in-out;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }

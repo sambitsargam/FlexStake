@@ -13,6 +13,7 @@ function setupEventListeners() {
     // Add event listeners for user interactions here
     document.querySelector('main').addEventListener('click', (event) => {
         updateUI('User clicked on main content');
+        animateMainContent();
     });
 }
 
@@ -29,4 +30,12 @@ function updateUI(message) {
 function updateUIFromContractState() {
     // Logic to update the UI based on the contract state
     console.log('Updating UI from contract state');
+}
+
+function animateMainContent() {
+    const mainContent = document.querySelector('main');
+    mainContent.classList.add('animate');
+    setTimeout(() => {
+        mainContent.classList.remove('animate');
+    }, 1000);
 }

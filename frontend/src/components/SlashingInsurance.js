@@ -20,6 +20,7 @@ function SlashingInsurance({ contract }) {
       const tx = await contract.purchaseInsurance({ value: ethers.utils.parseEther(insuranceAmount.toString()) });
       await tx.wait();
       updateUIFromContractState(contract);
+      animateElement(document.querySelector('.SlashingInsurance'));
     }
   };
 
@@ -34,6 +35,13 @@ function SlashingInsurance({ contract }) {
     contract.on('ContractStateChanged', () => {
       updateUIFromContractState(contract);
     });
+  };
+
+  const animateElement = (element) => {
+    element.classList.add('animate');
+    setTimeout(() => {
+      element.classList.remove('animate');
+    }, 1000);
   };
 
   return (
