@@ -16,6 +16,7 @@ The FlexStake contract is designed to manage staking and reward distribution. Us
 - `distributeRewards()`: Allows the contract owner to distribute rewards to all stakers.
 - `claimReward()`: Allows users to claim their accumulated rewards.
 - `newStake(uint256 _amount, uint256 _duration)`: Allows users to stake tokens with a specified duration.
+- `delegate(uint256 _amount)`: Allows users to delegate a specified amount of tokens.
 
 ### Deployment
 
@@ -66,6 +67,13 @@ FlexStake flexStake = FlexStake(contractAddress);
 flexStake.newStake(amount, duration);
 ```
 
+#### Delegating Tokens
+
+```solidity
+FlexStake flexStake = FlexStake(contractAddress);
+flexStake.delegate(amount);
+```
+
 #### Interacting with the Contract from the Frontend
 
 To interact with the FlexStake contract from the frontend, you can use the following code snippets:
@@ -102,6 +110,12 @@ async function handleStake(contract, stakeAmount) {
 
 async function handleNewStake(contract, newStakeAmount, stakeDuration) {
     const tx = await contract.newStake(ethers.utils.parseEther(newStakeAmount.toString()), stakeDuration);
+    await tx.wait();
+    updateUIFromContractState(contract);
+}
+
+async function handleDelegate(contract, delegationAmount) {
+    const tx = await contract.delegate(ethers.utils.parseEther(delegationAmount.toString()));
     await tx.wait();
     updateUIFromContractState(contract);
 }

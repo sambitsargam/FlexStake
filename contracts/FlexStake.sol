@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 contract FlexStake {
     mapping(address => uint256) public stakes;
     mapping(address => uint256) public rewards;
+    mapping(address => uint256) public delegations;
     uint256 public totalStaked;
     uint256 public rewardRate;
     address public owner;
@@ -11,6 +12,7 @@ contract FlexStake {
     event Unstaked(address indexed user, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
     event NewStake(address indexed user, uint256 amount, uint256 duration);
+    event Delegated(address indexed user, uint256 amount);
     event ContractStateChanged();
 
     modifier onlyOwner() {
@@ -41,6 +43,17 @@ contract FlexStake {
         totalStaked += _amount;
 
         emit NewStake(msg.sender, _amount, _duration);
+        emit ContractStateChanged();
+    }
+
+    function delegate(uint256 _amount) external {
+        require(_amount > 0, "Cannot delegate 0");
+        require(stakes[msg.sender] >= _amount, "Insufficient stake");
+
+        delegations[msg.sender] += _amount;
+        stakes[msg.sender] -= _amount;
+
+        emit Delegated(msg.sender, _amount);
         emit ContractStateChanged();
     }
 

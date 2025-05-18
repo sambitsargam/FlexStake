@@ -27,10 +27,13 @@ function Staking({ contract }) {
     }
   };
 
-  const handleDelegate = () => {
-    // Logic to delegate tokens
-    console.log(`Delegated ${delegationAmount} tokens`);
-    animateElement(document.querySelector('.Staking'));
+  const handleDelegate = async () => {
+    if (contract) {
+      const tx = await contract.delegate(ethers.utils.parseEther(delegationAmount.toString()));
+      await tx.wait();
+      updateUIFromContractState(contract);
+      animateElement(document.querySelector('.Staking'));
+    }
   };
 
   const handleNewStake = async () => {
