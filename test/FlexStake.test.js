@@ -85,6 +85,30 @@ describe("FlexStake", function () {
     });
   });
 
+  describe("Delegation", function () {
+    it("Should allow users to delegate tokens", async function () {
+      await flexStake.connect(addr1).stake({ value: ethers.utils.parseEther("1") });
+      await flexStake.connect(addr1).delegate(ethers.utils.parseEther("0.5"));
+      expect(await flexStake.delegations(addr1.address)).to.equal(ethers.utils.parseEther("0.5"));
+    });
+
+    it("Should emit a Delegated event when tokens are delegated", async function () {
+      await flexStake.connect(addr1).stake({ value: ethers.utils.parseEther("1") });
+      await expect(flexStake.connect(addr1).delegate(ethers.utils.parseEther("0.5")))
+        .to.emit(flexStake, "Delegated")
+        .withArgs(addr1.address, ethers.utils.parseEther("0.5"));
+    });
+
+    it("Should not allow delegating 0 tokens", async function () {
+      await expect(flexStake.connect(addr1).delegate(0)).to.be.revertedWith("Cannot delegate 0");
+    });
+
+    it("Should not allow delegating more than staked", async function () {
+      await flexStake.connect(addr1).stake({ value: ethers.utils.parseEther("1") });
+      await expect(flexStake.connect(addr1).delegate(ethers.utils.parseEther("2"))).to.be.revertedWith("Insufficient stake");
+    });
+  });
+
   describe("Rewards", function () {
     it("Should distribute rewards correctly", async function () {
       await flexStake.connect(addr1).stake({ value: ethers.utils.parseEther("1") });
