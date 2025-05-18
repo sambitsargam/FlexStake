@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract FlexStake {
@@ -7,6 +8,10 @@ contract FlexStake {
     uint256 public totalStaked;
     uint256 public rewardRate;
     address public owner;
+
+    // Track stakers in an array for iteration
+    address[] private stakers;
+    mapping(address => bool) private isStaker;
 
     event Staked(address indexed user, uint256 amount);
     event Unstaked(address indexed user, uint256 amount);
@@ -28,6 +33,11 @@ contract FlexStake {
     function stake() external payable {
         require(msg.value > 0, "Cannot stake 0");
 
+        if (!isStaker[msg.sender]) {
+            isStaker[msg.sender] = true;
+            stakers.push(msg.sender);
+        }
+
         stakes[msg.sender] += msg.value;
         totalStaked += msg.value;
 
@@ -35,14 +45,21 @@ contract FlexStake {
         emit ContractStateChanged();
     }
 
-    function newStake(uint256 _amount, uint256 _duration) external payable {
-        require(_amount > 0, "Cannot stake 0");
+    // Adjusted newStake to only accept msg.value (no _amount param)
+    // and store duration in an event (no on-chain storage)
+    function newStake(uint256 _duration) external payable {
+        require(msg.value > 0, "Cannot stake 0");
         require(_duration > 0, "Duration must be greater than 0");
 
-        stakes[msg.sender] += _amount;
-        totalStaked += _amount;
+        if (!isStaker[msg.sender]) {
+            isStaker[msg.sender] = true;
+            stakers.push(msg.sender);
+        }
 
-        emit NewStake(msg.sender, _amount, _duration);
+        stakes[msg.sender] += msg.value;
+        totalStaked += msg.value;
+
+        emit NewStake(msg.sender, msg.value, _duration);
         emit ContractStateChanged();
     }
 
@@ -70,16 +87,13 @@ contract FlexStake {
     }
 
     function distributeRewards() external onlyOwner {
-        address[] memory stakers = new address[](totalStaked);
-        uint256 index = 0;
-        for (address staker : stakes) {
-            stakers[index] = staker;
-            index++;
-        }
         for (uint256 i = 0; i < stakers.length; i++) {
             address staker = stakers[i];
-            uint256 reward = stakes[staker] * rewardRate / 100;
-            rewards[staker] += reward;
+            uint256 stakeAmount = stakes[staker];
+            if (stakeAmount > 0) {
+                uint256 reward = (stakeAmount * rewardRate) / 100;
+                rewards[staker] += reward;
+            }
         }
         emit ContractStateChanged();
     }
